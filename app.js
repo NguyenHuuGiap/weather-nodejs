@@ -5,7 +5,9 @@ const { RTMClient } = require('@slack/client');
 
 const token = process.env.tokenSlack;
 
-var darksky = new ForecastIO("a8d5dea0a222e77479ff9c6b11fe9192");
+const forecastid = process.env.forecastid
+
+var darksky = new ForecastIO(forecastid);
 
 function getWeather(latitudeGg, longitudeGg) {
   if(!latitudeGg || !longitudeGg){
