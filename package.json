@@ -1,0 +1,22 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "forecastio": "^1.0.2",
+    "nodemon": "^1.17.4",
+    "pryjs": "^1.0.3",
+    "temp-units-conv": "^1.0.2",
+    "zippity-do-dah": "0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "NguyenHuuGiap",
+  "license": "ISC"
+}
