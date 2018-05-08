@@ -1,49 +1,46 @@
-var path = require("path");
-var express = require("express");
-var zipdb = require("zippity-do-dah");
 var ForecastIO = require("forecastio");
 var pry = require("pryjs");
 var tuc = require('temp-units-conv');
+const { RTMClient } = require('@slack/client');
 
-var app = express();
+const token = process.env.tokenSlack;
+
 var darksky = new ForecastIO("a8d5dea0a222e77479ff9c6b11fe9192");
 
-app.use(express.static(path.resolve(__dirname, "assets")));
-
-app.set("views", path.resolve(__dirname, "views"));
-app.set("view engine", "ejs");
-
-app.get("/", function(req, res){
-  res.render("index");
-});
-
-app.get(/^\/(\d{5})$/, function(req, res) {
-  var latitudeGg = req.query["lat"];
-  var longitudeGg = req.query["lng"];
+function getWeather(latitudeGg, longitudeGg) {
   if(!latitudeGg || !longitudeGg){
     next();
     return;
   }
-  var latitude = latitudeGg;
-  var longitude = longitudeGg;
 
-  darksky.forecast(latitude, longitude, function(err, data) {
+  darksky.forecast(latitudeGg, latitudeGg, function(err, data) {
     var temperature = tuc.f2c(data.currently.temperature).toFixed(2);
     var summaryDaily = data.daily.data[0].summary
     if(err){
-      next();
       return;
     }
-    res.json({
-      zipcode: "zipcode",
-      temperature: temperature,
-      summaryDaily: summaryDaily
-    })
+
+    var content = "It is " + temperature + " in Da Nang. " + "Summary daily: " + summaryDaily
+    sendMgsSlack(content)
   })
+}
+
+const rtm = new RTMClient(token);
+rtm.start();
+
+const channelId = process.env.channelID;
+
+
+var schedule = require('node-schedule');
+
+schedule.scheduleJob('00 00 7 * * 1-7', function(){
+  getWeather(16.066901, 108.213032);
 });
 
-app.use(function(req, res) {
-  res.status(404).render("404");
-});
-
-app.listen(8080);
+function sendMgsSlack(content) {
+  rtm.sendMessage(content, channelId)
+    .then((res) => {
+      console.log('Message sent: ' + content);
+    })
+    .catch(console.error);
+};
