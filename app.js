@@ -22,7 +22,7 @@ function getWeather(latitudeGg, longitudeGg) {
       return;
     }
 
-    var content = "It is " + temperature + " in Da Nang. " + "Summary daily: " + summaryDaily
+    var content = "It is " + temperature + " °C in Da Nang. " + "Summary daily: " + summaryDaily
     sendMgsSlack(content)
   })
 }
